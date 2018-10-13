@@ -11,15 +11,19 @@ const employees = [
     id: 1,
     active: true,
     name: "Mauro",
+    color: "#4CAF50",
     schedules: [
       { id: 1, day: "MONDAY", from: 8 * 60, to: 12 * 60, type: "working" },
-      { id: 2, day: "MONDAY", from: 13 * 60, to: 18 * 60, type: "working" }
+      { id: 2, day: "MONDAY", from: 13 * 60, to: 18 * 60, type: "working" },
+      { id: 6, day: "TUESDAY", from: 8 * 60, to: 12 * 60, type: "working" },
+      { id: 7, day: "TUESDAY", from: 13 * 60, to: 18 * 60, type: "working" }
     ]
   },
   {
     id: 2,
     active: true,
     name: "Su",
+    color: "#E91E63",
     schedules: [
       { id: 3, day: "MONDAY", from: 12 * 60, to: 24 * 60, type: "working" }
     ]
@@ -27,7 +31,8 @@ const employees = [
   {
     id: 3,
     name: "Igor",
-    active: false,
+    active: true,
+    color: "#FFC107",
     schedules: [
       { id: 4, day: "MONDAY", from: 0 * 60, to: 4.5 * 60, type: "working" },
       { id: 5, day: "TUESDAY", from: 5.5 * 60, to: 9 * 60, type: "working" }
@@ -38,7 +43,7 @@ const employees = [
 const Day = styled.li`
   display: inline-block;
   margin-right: 10px;
-  color: ${props => (props.selected ? "red" : "black")};
+  font-weight: ${props => (props.selected ? "900" : "300")};
 `;
 
 const Days = styled.ul`
@@ -51,10 +56,10 @@ const Handle = styled.div`
   ${props => props.kind}: 0;
   top: 0;
   bottom: 0;
-  background: red;
+  background: rgba(255,255,255,0.4);
   width: 5px;
   &:hover{
-    background: yellow;
+    background: rgba(255,255,255,0.2);
   }
 `;
 
@@ -216,7 +221,7 @@ class Employee extends React.Component {
     const pl = (left - container.left) / container.width;
 
     const value = 24 * 60 * pl;
-    const rounded = value - (value % 5);
+    const rounded = value - (value % 30);
 
     this.props.setSchedule(empId, segId, kind, rounded);
   };
@@ -227,14 +232,25 @@ class Employee extends React.Component {
         style={{
           background: "#eee",
           position: "relative",
-          marginBottom: "20px",
-          height: "40px"
+          marginBottom: "5px",
+          height: "40px",
+          borderRadius: "5px",
+          overflow: "hidden"
         }}
         ref={element => {
           this.containerRef = element;
         }}
       >
-        <span style={{ position: "absolute", left: 0, zIndex: 1 }}>
+        <span
+          style={{
+            position: "absolute",
+            left: 0,
+            zIndex: 1,
+            background: "rgba(255,255,255,0.5)",
+            padding: "2px 5px",
+            borderRadius: "2px"
+          }}
+        >
           {this.props.s.name}
         </span>
 
@@ -257,7 +273,7 @@ class Employee extends React.Component {
                 borderRadius: "4px",
                 overflow: "hidden",
                 top: 0,
-                background: "rgba(0,0,0,0.1)",
+                background: this.props.s.color || "rgba(0,0,0,0.1)",
                 position: "absolute",
                 height: "100%",
                 left: (100 * ss.from) / (24 * 60) + "%",
@@ -266,7 +282,15 @@ class Employee extends React.Component {
                 userSelect: "none"
               }}
             >
-              {ffrmo}-{fto}
+              <span
+                style={{
+                  lineHeight: "40px",
+                  f2ontWeight: "bold",
+                  color: "rgba(255,255,255,0.8)"
+                }}
+              >
+                {ffrmo} - {fto}
+              </span>
               <EmployeeSegmentHandle
                 kind="left"
                 onMouseMove={e => this.move(e, this.props.s.id, ss.id, "from")}
@@ -294,7 +318,7 @@ function App(props) {
     <div className="App">
       <ViewSelector selected={props.selected} setSelected={props.setSelected} />
       <DaySelector selected={props.day.selected} setSelected={props.setDay} />
-
+      <br />
       <div style={{}}>
         {props.employees.map(s => {
           return (
