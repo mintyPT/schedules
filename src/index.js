@@ -4,6 +4,10 @@ import ReactDOM from "react-dom";
 import styled from "styled-components";
 import _ from "lodash";
 
+import Day from "./components/Day";
+import Days from "./components/Days";
+import Handle from "./components/Handle";
+
 import "./styles.css";
 
 const employees = [
@@ -39,29 +43,6 @@ const employees = [
     ]
   }
 ];
-
-const Day = styled.li`
-  display: inline-block;
-  margin-right: 10px;
-  font-weight: ${props => (props.selected ? "900" : "300")};
-`;
-
-const Days = styled.ul`
-  list-style: none;
-  padding-left: 0;
-`;
-
-const Handle = styled.div`
-  position: absolute;
-  ${props => props.kind}: 0;
-  top: 0;
-  bottom: 0;
-  background: rgba(255,255,255,0.4);
-  width: 5px;
-  &:hover{
-    background: rgba(255,255,255,0.2);
-  }
-`;
 
 function ViewSelector(props) {
   return (
@@ -147,7 +128,6 @@ function DaySelector(props) {
 class EmployeeSegmentHandle extends React.Component {
   render() {
     const { onMouseMove, ref, ...props } = this.props;
-    console.log("this.props", this.props);
     return (
       <Mover onMouseMove={onMouseMove}>
         <Handle {...props} ref={ref} />
@@ -193,9 +173,6 @@ class Mover extends React.Component {
     }
   };
 
-  /**
-   * Set the wrapper ref
-   */
   setWrapperRef = node => {
     this.wrapperRef = node;
     if (this.props.ref) {
