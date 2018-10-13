@@ -143,7 +143,20 @@ function DaySelector(props) {
   );
 }
 
+// This can never be a stateless component because of the usage of ref
 class EmployeeSegmentHandle extends React.Component {
+  render() {
+    const { onMouseMove, ref, ...props } = this.props;
+    console.log("this.props", this.props);
+    return (
+      <Mover onMouseMove={onMouseMove}>
+        <Handle {...props} ref={ref} />
+      </Mover>
+    );
+  }
+}
+
+class Mover extends React.Component {
   constructor(props) {
     super(props);
     this.state = { active: false };
@@ -185,13 +198,16 @@ class EmployeeSegmentHandle extends React.Component {
    */
   setWrapperRef = node => {
     this.wrapperRef = node;
+    if (this.props.ref) {
+      this.props.ref(node);
+    }
   };
 
   render() {
     const { props } = this;
     return (
       <div ref={this.setWrapperRef} onMouseDown={this.onMouseDown}>
-        <Handle kind={props.kind} />
+        {props.children}
       </div>
     );
   }
@@ -298,6 +314,7 @@ class Employee extends React.Component {
                   this.handle["l." + ss.id] = element;
                 }}
               />
+
               <EmployeeSegmentHandle
                 kind="right"
                 onMouseMove={e => this.move(e, this.props.s.id, ss.id, "to")}
